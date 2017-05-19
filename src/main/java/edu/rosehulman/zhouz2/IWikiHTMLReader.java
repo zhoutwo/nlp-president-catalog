@@ -1,5 +1,6 @@
 package edu.rosehulman.zhouz2;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -10,9 +11,17 @@ public interface IWikiHTMLReader {
   /**
    * Sets the HTML file to read
    *
-   * @param htmlFile Path to the HTML File to read
+   * @param htmlFile The HTML File to read
    */
-  public void setWikiHTMLFile(Path htmlFile);
+  public void setWikiHTMLFile(File htmlFile);
+
+  /**
+   * Returns the title of the HTML file
+   *
+   * @return The page title as defined in the "<title>" tag
+   * @throws IllegalStateException If no current HTML file is specified, then this exception is thrown
+   */
+  public String getTitle() throws IllegalStateException;
 
   /**
    * Returns the article body as a whole string
