@@ -3,6 +3,12 @@
   <groupId>edu.rosehulman.zhouz2</groupId>
   <artifactId>nlp-president-catalog</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>edu.stanford.nlp</groupId>
@@ -22,9 +28,9 @@
       <classifier>models-english</classifier>
     </dependency>
     <dependency>
-      <groupId>com.github.detro.ghostdriver</groupId>
-      <artifactId>phantomjsdriver</artifactId>
-      <version>1.0.1</version>
+      <groupId>com.github.detro</groupId>
+      <artifactId>ghostdriver</artifactId>
+      <version>2.0.0</version>
     </dependency>
   </dependencies>
   <properties>
