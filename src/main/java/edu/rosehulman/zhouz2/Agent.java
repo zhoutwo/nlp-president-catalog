@@ -8,6 +8,7 @@ import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.trees.TreeCoreAnnotations.*;
 import edu.stanford.nlp.util.*;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -63,6 +64,11 @@ public class Agent {
         System.out.println(word + "-" + pos + "-" + ne + "-" + ca + "-" + la + "-" + ia);
       }
     }
-  }
 
+    // Test Ghost Driver
+    IWikiHTMLReader htmlReader = new PhantomJSWikiHTMLReader();
+    File adams = new File("data/html/Adams.html");
+    htmlReader.setWikiHTMLFile(adams);
+    System.out.println(htmlReader.getTitle());
+  }
 }
