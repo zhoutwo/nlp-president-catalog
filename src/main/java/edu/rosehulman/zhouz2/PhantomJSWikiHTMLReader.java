@@ -1,12 +1,14 @@
 package edu.rosehulman.zhouz2;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +56,7 @@ public class PhantomJSWikiHTMLReader implements IWikiHTMLReader {
     if (!fileSet) {
       throw new IllegalStateException("HTML file path hasn't been set!");
     }
+    List<WebElement> rows = driver.findElements(By.cssSelector("table.vcard tbody tr"));
     return null;
   }
 }
