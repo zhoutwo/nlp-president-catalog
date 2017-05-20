@@ -70,5 +70,6 @@ public class Agent {
     File adams = new File("data/html/Adams.html");
     htmlReader.setWikiHTMLFile(adams);
     System.out.println(htmlReader.getTitle());
+    System.out.println(htmlReader.getBody());
   }
 }
