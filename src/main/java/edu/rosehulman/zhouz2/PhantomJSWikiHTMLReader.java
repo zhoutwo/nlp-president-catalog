@@ -1,16 +1,12 @@
 package edu.rosehulman.zhouz2;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.phantomjs.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 /**
  * Created by Zhou Zhou on 5/19/17.
