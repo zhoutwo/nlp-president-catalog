@@ -24,6 +24,14 @@ public interface IWikiHTMLReader {
   public String getTitle() throws IllegalStateException;
 
   /**
+   * Returns the title of the HTML file
+   *
+   * @return The name of the president by removing unnecessary characters from the page title
+   * @throws IllegalStateException If no current HTML file is specified, then this exception is thrown
+   */
+  public String getPresidentNameFromTitle() throws IllegalStateException;
+
+  /**
    * Returns the article body as a whole string
    *
    * @return The body of the Wikipedia article

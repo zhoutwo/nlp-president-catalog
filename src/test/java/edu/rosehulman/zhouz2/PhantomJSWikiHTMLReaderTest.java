@@ -28,6 +28,16 @@ public class PhantomJSWikiHTMLReaderTest {
   }
 
   @Test
+  public void testGetPresidentNameFromTitle() {
+    Throwable exception= assertThrows(IllegalStateException.class, () -> {
+      reader.getTitle();
+    });
+    assertEquals("HTML file path hasn't been set!", exception.getMessage());
+    reader.setWikiHTMLFile(new File("data/html/Adams.html"));
+    assertEquals("John Adams", reader.getPresidentNameFromTitle());
+  }
+
+  @Test
   public void testGetBody() throws IOException {
     Throwable exception = assertThrows(IllegalStateException.class, () -> {
       reader.getBody();

@@ -50,6 +50,17 @@ public class PhantomJSWikiHTMLReader implements IWikiHTMLReader {
   }
 
   @Override
+  public String getPresidentNameFromTitle() throws IllegalStateException {
+    String title = this.getTitle();
+    int dashIndex = title.indexOf('-');
+    if (dashIndex < 0) {
+      return title;
+    } else {
+      return title.substring(0, dashIndex - 1);
+    }
+  }
+
+  @Override
   public String getBody() throws IllegalStateException {
     if (currentHTMLFileURL == null) {
       throw new IllegalStateException("HTML file path hasn't been set!");
