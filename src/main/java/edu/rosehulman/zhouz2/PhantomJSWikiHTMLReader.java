@@ -16,20 +16,21 @@ import java.util.Map;
  */
 public class PhantomJSWikiHTMLReader implements IWikiHTMLReader {
   private WebDriver driver;
-  private boolean fileSet;
+  private String currentHTMLFileURL;
 
   public PhantomJSWikiHTMLReader() {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setJavascriptEnabled(true);
     driver = new PhantomJSDriver(capabilities);
-    fileSet = false;
+    currentHTMLFileURL = null;
   }
 
   @Override
   public void setWikiHTMLFile(File htmlFile) {
     try {
-      driver.get(htmlFile.toURI().toURL().toString());
-      fileSet = true;
+      String url = htmlFile.toURI().toURL().toString();
+      driver.get(url);
+      currentHTMLFileURL = url;
     } catch (MalformedURLException e) {
       e.printStackTrace();
     }
@@ -37,25 +38,28 @@ public class PhantomJSWikiHTMLReader implements IWikiHTMLReader {
 
   @Override
   public String getTitle() throws IllegalStateException {
-    if (!fileSet) {
+    if (currentHTMLFileURL == null) {
       throw new IllegalStateException("HTML file path hasn't been set!");
     }
+    driver.get(currentHTMLFileURL);
     return driver.getTitle();
   }
 
   @Override
   public String getBody() throws IllegalStateException {
-    if (!fileSet) {
+    if (currentHTMLFileURL == null) {
       throw new IllegalStateException("HTML file path hasn't been set!");
     }
+    driver.get(currentHTMLFileURL);
     return null;
   }
 
   @Override
   public Map<String, String> getVCardMap() throws IllegalStateException {
-    if (!fileSet) {
+    if (currentHTMLFileURL == null) {
       throw new IllegalStateException("HTML file path hasn't been set!");
     }
+    driver.get(currentHTMLFileURL);
     List<WebElement> rows = driver.findElements(By.cssSelector("table.vcard tbody tr"));
     return null;
   }
