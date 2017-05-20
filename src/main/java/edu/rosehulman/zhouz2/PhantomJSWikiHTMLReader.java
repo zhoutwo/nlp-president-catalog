@@ -69,8 +69,10 @@ public class PhantomJSWikiHTMLReader implements IWikiHTMLReader {
       buffer = new StringBuffer(INITIAL_BUFFER_SIZE);
       for (WebElement paragraph : paragraphs) {
         String paragraphText = paragraph.getText();
-        buffer.append(paragraphText);
-        buffer.append('\n');
+        if (paragraphText.length() != 0) {
+          buffer.append(paragraphText);
+          buffer.append('\n');
+        }
       }
       String result = buffer.substring(0, buffer.length() - 1);
       return result;
