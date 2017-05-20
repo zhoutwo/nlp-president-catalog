@@ -30,9 +30,21 @@ public class Agent {
       PropertiesUtils.asProperties(
         "annotators", "tokenize,ssplit,pos,lemma,parse,ner,natlog,dcoref",
         "tokenize.language", "en"));
+    String text;
+    //if (args.length != 0 && args[0].equals("-all")) {
+    if (true){
+      //Fill in later
+      text = "Jerry was born May 20th, 1996.";
+    } else {
+      // Test Ghost Driver
+      IWikiHTMLReader htmlReader = new PhantomJSWikiHTMLReader();
+      File adams = new File("data/html/Lincoln.html");
+      htmlReader.setWikiHTMLFile(adams);
+      System.out.println(htmlReader.getTitle());
 
-    // read some text in the text variable
-    String text = "My name is Jerry. I am working with Zhou on this project. Zhou understood the concept really fast and hacked the assignment quickly. He is a clever but noisy boy.";
+      // read some text in the text variable
+      text = htmlReader.getBody();
+    }
     // create an empty Annotation just with the given text
     Annotation document = new Annotation(text);
 
@@ -67,8 +79,9 @@ public class Agent {
 
 
       // this is the Stanford dependency graph of the current sentence
-      SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
-      System.out.println(dependencies);
+      // We think this is useless since it is not good at telling the difference between object and verb
+      //SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
+      //System.out.println(dependencies);
     }
 
     // This is the coreference link graph
@@ -77,12 +90,8 @@ public class Agent {
     // Both sentence and token offsets start at 1!
     Map<Integer, CorefChain> graph =
             document.get(CorefCoreAnnotations.CorefChainAnnotation.class);
-
-    // Test Ghost Driver
-    IWikiHTMLReader htmlReader = new PhantomJSWikiHTMLReader();
-    File adams = new File("data/html/Adams.html");
-    htmlReader.setWikiHTMLFile(adams);
-    System.out.println(htmlReader.getTitle());
-    System.out.println(htmlReader.getBody());
   }
+
+
+
 }
