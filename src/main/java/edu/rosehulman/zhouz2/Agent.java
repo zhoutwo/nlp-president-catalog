@@ -1,4 +1,5 @@
 package edu.rosehulman.zhouz2;
+import edu.stanford.nlp.dcoref.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.pipeline.*;
@@ -27,14 +28,11 @@ public class Agent {
 
     StanfordCoreNLP pipeline = new StanfordCoreNLP(
       PropertiesUtils.asProperties(
-        "annotators", "tokenize,ssplit,pos,lemma,parse,natlog",
-        "ssplit.isOneSentence", "false",
-        "parse.model", "edu/stanford/nlp/models/srparser/englishSR.ser.gz",
+        "annotators", "tokenize,ssplit,pos,lemma,parse,ner,natlog,dcoref",
         "tokenize.language", "en"));
 
     // read some text in the text variable
-    String text = "My name is Joe. I like eating donuts.";
-
+    String text = "My name is Jerry. I am working with Zhou on this project. Zhou understood the concept really fast and hacked the assignment quickly. He is a clever but noisy boy.";
     // create an empty Annotation just with the given text
     Annotation document = new Annotation(text);
 
@@ -61,9 +59,24 @@ public class Agent {
 
         int ia = token.get(IndexAnnotation.class);
 
-        System.out.println(word + "-" + pos + "-" + ne + "-" + ca + "-" + la + "-" + ia);
+        //System.out.println(word + "-" + pos + "-" + ne + "-" + ca + "-" + la + "-" + ia);
       }
+      // this is the parse tree of the current sentence
+      Tree tree = sentence.get(TreeAnnotation.class);
+      System.out.println(tree.toString());
+
+
+      // this is the Stanford dependency graph of the current sentence
+      SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
+      System.out.println(dependencies);
     }
+
+    // This is the coreference link graph
+    // Each chain stores a set of mentions that link to each other,
+    // along with a method for getting the most representative mention
+    // Both sentence and token offsets start at 1!
+    Map<Integer, CorefChain> graph =
+            document.get(CorefCoreAnnotations.CorefChainAnnotation.class);
 
     // Test Ghost Driver
     IWikiHTMLReader htmlReader = new PhantomJSWikiHTMLReader();
