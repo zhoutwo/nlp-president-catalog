@@ -22,9 +22,10 @@ public class  StandfordCoreNLPScholar implements IScholar {
 
   public StandfordCoreNLPScholar() {
     pipeline = new StanfordCoreNLP(PropertiesUtils.asProperties(
-      "annotators", "tokenize, ssplit, pos, lemma, parse, ner, natlog, dcoref, relation",
+      "annotators", "tokenize, ssplit, pos, lemma, parse, ner, mention, relation, coref",
       "tokenize.language", "en",
-      "ssplit.newlineIsSentenceBreak", "always"
+      "ssplit.newlineIsSentenceBreak", "always",
+      "coref.algorithm", "neural"
     ));
 
     parseTreeMap = new HashMap<>();
@@ -38,7 +39,6 @@ public class  StandfordCoreNLPScholar implements IScholar {
     List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
     for (CoreMap sentence : sentences) {
       Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-      System.out.println(tree.toString());
       trees.add(tree);
     }
     parseTreeMap.put(name, trees);
