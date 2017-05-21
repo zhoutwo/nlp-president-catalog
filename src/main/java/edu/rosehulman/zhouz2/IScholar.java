@@ -5,7 +5,7 @@ package edu.rosehulman.zhouz2;
  */
 public interface IScholar {
   /**
-   * Add source for the scholar to parse
+   * Add source for the scholar to parse. You can call this method several times before calling testStatement()
    * @param source Source texts to learn and parse
    */
   public void parseText(String source);
