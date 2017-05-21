@@ -21,6 +21,6 @@ public class HardcodedTextAgent implements IAgent {
     String name = htmlReader.getPresidentNameFromTitle();
     String body = htmlReader.getBody();
     scholar.parseText(name, body);
-    System.out.println(scholar.getParseTreeByName(name));
+    System.out.println(scholar.getParseTreesByName(name));
   }
 }

@@ -27,7 +27,7 @@ public interface IScholar {
    * @param name Name of the person to which the parse trees belong
    * @return All parse trees registered under the person with the name
    */
-  public List<Tree> getParseTreeByName(String name);
+  public List<Tree> getParseTreesByName(String name);
 
   /**
    * Return all parsgie trees sorted by name

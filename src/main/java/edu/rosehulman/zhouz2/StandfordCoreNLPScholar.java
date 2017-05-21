@@ -49,7 +49,7 @@ public class StandfordCoreNLPScholar implements IScholar {
   }
 
   @Override
-  public List<Tree> getParseTreeByName(String name) {
+  public List<Tree> getParseTreesByName(String name) {
     return null;
   }
 
