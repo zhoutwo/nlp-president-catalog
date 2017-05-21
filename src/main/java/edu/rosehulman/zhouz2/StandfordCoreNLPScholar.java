@@ -16,14 +16,15 @@ import java.util.Map;
 /**
  * Created by Zhou Zhou on 5/20/17.
  */
-public class StandfordCoreNLPScholar implements IScholar {
+public class  StandfordCoreNLPScholar implements IScholar {
   private Map<String, List<Tree>> parseTreeMap;
   private final StanfordCoreNLP pipeline;
 
   public StandfordCoreNLPScholar() {
     pipeline = new StanfordCoreNLP(PropertiesUtils.asProperties(
-      "annotators", "tokenize,ssplit,pos,lemma,parse,ner,natlog,dcoref",
-      "tokenize.language", "en"
+      "annotators", "tokenize, ssplit, pos, lemma, parse, ner, natlog, dcoref, relation",
+      "tokenize.language", "en",
+      "ssplit.newlineIsSentenceBreak", "always"
     ));
 
     parseTreeMap = new HashMap<>();
