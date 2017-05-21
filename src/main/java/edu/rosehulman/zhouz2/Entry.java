@@ -12,7 +12,7 @@ public class Entry {
    * Main method
    */
   public static void main(String[] args) {
-    Thread agentThread = new Thread(new ConsoleAgent());
+    Thread agentThread = new Thread(new HardcodedTextAgent("Jerry was born on May 20, 1996."));
     agentThread.run();
   }
 }
