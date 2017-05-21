@@ -8,7 +8,7 @@ public interface IScholar {
    * Add source for the scholar to parse
    * @param source Source texts to learn and parse
    */
-  public void addSource(String source);
+  public void parseText(String source);
 
   /**
    * Verify a statement whether it's known to be true or not
