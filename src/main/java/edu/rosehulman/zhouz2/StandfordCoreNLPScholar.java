@@ -55,21 +55,53 @@ public class StandfordCoreNLPScholar implements IScholar {
 
   @Override
   public boolean testStatement(String statement) {
-    return false;
+    // TODO: Find the name in statement
+    String name = "Abraham Lincoln";
+    return testStatementByName(name, statement);
   }
 
   @Override
   public boolean testStatementByName(String name, String statement) {
+    List<Tree> trees = parseTreeMap.get(name);
+    for (Tree tree : trees) {
+      if (testStatements(statement, tree)) {
+        return true;
+      }
+    }
     return false;
   }
 
   @Override
   public boolean testStatements(String statement, String truth) {
+    Annotation statementAnnotation = new Annotation(statement);
+    pipeline.annotate(statementAnnotation);
+    List<CoreMap> statementSentences = statementAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
+    Annotation truthAnnotation = new Annotation(truth);
+    pipeline.annotate(truthAnnotation);
+    List<CoreMap> truthSentences = truthAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
+    for (CoreMap statementSentence : statementSentences) {
+      Tree statementTree = statementSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+      for (CoreMap truthSentence : truthSentences) {
+        Tree truthTree = truthSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+        if (testStatements(statementTree, truthTree)) {
+          return true;
+        }
+      }
+    }
     return false;
   }
 
   @Override
   public boolean testStatements(String statement, Tree truthTree) {
+    Annotation statementAnnotation = new Annotation(statement);
+    pipeline.annotate(statementAnnotation);
+    List<CoreMap> statementSentences = statementAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
+    for (CoreMap statementSentence : statementSentences) {
+      Tree statementTree = statementSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+      if (testStatements(statementTree, truthTree)) {
+        return true;
+      }
+    }
     return false;
   }
 
@@ -85,6 +117,10 @@ public class StandfordCoreNLPScholar implements IScholar {
 
   @Override
   public Map<String, List<Tree>> getParseTrees() {
-    return null;
+    Map<String, List<Tree>> result = new HashMap<>();
+    for (String key : parseTreeMap.keySet()) {
+      result.put(key, parseTreeMap.get(key));
+    }
+    return result;
   }
 }
