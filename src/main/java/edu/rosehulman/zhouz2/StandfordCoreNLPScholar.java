@@ -1,5 +1,6 @@
 package edu.rosehulman.zhouz2;
 
+import edu.rosehulman.zhouz2.data.*;
 import edu.stanford.nlp.coref.*;
 import edu.stanford.nlp.coref.data.*;
 import edu.stanford.nlp.ling.*;
@@ -15,6 +16,11 @@ import java.util.*;
 public class StandfordCoreNLPScholar implements IScholar {
   private Map<String, List<Tree>> parseTreeMap;
   private final StanfordCoreNLP pipeline;
+  private final Pool<IEvent> events;
+  private final Pool<ITime> times;
+  private final Pool<IAction> actions;
+  private final Pool<ILocation> locations;
+  private final Pool<ConcreteEntity> entities;
 
   public StandfordCoreNLPScholar() {
     pipeline = new StanfordCoreNLP(PropertiesUtils.asProperties(
@@ -25,6 +31,15 @@ public class StandfordCoreNLPScholar implements IScholar {
     ));
 
     parseTreeMap = new HashMap<>();
+    events = new Pool<>();
+    times = new Pool<>();
+    actions = new Pool<>();
+    locations = new Pool<>();
+    entities = new Pool<>();
+  }
+
+  private static boolean testMatching(Pool<IEvent> statementEvents, Pool<IEvent> truthEvents) {
+    return false;
   }
 
   @Override
@@ -75,19 +90,20 @@ public class StandfordCoreNLPScholar implements IScholar {
   public boolean testStatements(String statement, String truth) {
     Annotation statementAnnotation = new Annotation(statement);
     pipeline.annotate(statementAnnotation);
-    List<CoreMap> statementSentences = statementAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
+//    List<CoreMap> statementSentences = statementAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
     Annotation truthAnnotation = new Annotation(truth);
     pipeline.annotate(truthAnnotation);
-    List<CoreMap> truthSentences = truthAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
-    for (CoreMap statementSentence : statementSentences) {
-      Tree statementTree = statementSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-      for (CoreMap truthSentence : truthSentences) {
-        Tree truthTree = truthSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-        if (testStatements(statementTree, truthTree)) {
-          return true;
-        }
-      }
-    }
+    Pool<IEvent> statementEvents = generateEvents(statementAnnotation);
+//    List<CoreMap> truthSentences = truthAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
+//    for (CoreMap statementSentence : statementSentences) {
+//      Tree statementTree = statementSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+//      for (CoreMap truthSentence : truthSentences) {
+//        Tree truthTree = truthSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+//        if (testStatements(statementTree, truthTree)) {
+//          return true;
+//        }
+//      }
+//    }
     return false;
   }
 
@@ -122,5 +138,57 @@ public class StandfordCoreNLPScholar implements IScholar {
       result.put(key, parseTreeMap.get(key));
     }
     return result;
+  }
+
+  private Pool<IEvent> generateEvents(Annotation document) {
+    final Pool<IEvent> events = new Pool<>();
+    final Pool<ITime> times = new Pool<>();
+    final Pool<IAction> actions = new Pool<>();
+    final Pool<ILocation> locations = new Pool<>();
+    final Pool<ConcreteEntity> entities = new Pool<>();
+    List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+    int numOfSentences = sentences.size();
+    boolean[] processedSentences = new boolean[numOfSentences];
+    // Iterate through all coref chains, because each chain is an individual identity
+    for (CorefChain cc : document.get(CorefCoreAnnotations.CorefChainAnnotation.class).values()) {
+      // "Proper mention and a mention with more pre-modifiers are preferred",
+      // which means this is believed to be the name, not a pronoun or other reference words
+      String name = cc.getRepresentativeMention().mentionSpan;
+
+      // Create the person in scope
+      ConcreteEntity mainCharacter = new ConcreteEntity();
+      mainCharacter.setName(name);
+      entities.add(mainCharacter);
+
+      // Get all mentions in this coref chain
+      List<CorefChain.CorefMention> mentions = cc.getMentionsInTextualOrder();
+      for (CorefChain.CorefMention mention : mentions) {
+        int sentenceNumber = mention.position.get(0);
+        CoreMap sentence = sentences.get(sentenceNumber);
+        // Tree parsing:
+        // By empirical observation (http://nlpviz.bpodgursky.com/), the grammar for sentence is:
+        // ROOT -> S(entence)
+        // S -> S | S,<CC>S | <NP><VP>
+        // NP -> <NNP>+ (Person's name)| <PRP> (Personal pronoun)
+        // VP -> <VBD><ADVP>*<VP> | <VBN><NP>
+        // VBD -> all verbs, including be, am, is ,are
+        // Some reference was reading: https://stackoverflow.com/questions/1833252/java-stanford-nlp-part-of-speech-labels
+        Tree sentenceTree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class).flatten();
+
+      }
+
+    }
+    for (int i = 0; i < numOfSentences; i++) {
+      CoreMap sentence = sentences.get(i);
+      System.out.println("---");
+      System.out.println("mentions");
+
+      for (Mention m : sentence.get(CorefCoreAnnotations.CorefMentionsAnnotation.class)) {
+        System.out.println("\t" + m);
+      }
+    }
+
+
+    return events;
   }
 }
