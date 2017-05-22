@@ -39,6 +39,14 @@ public interface IScholar {
   public boolean testStatements(String statement, String truth);
 
   /**
+   * Verify whether statement is true according to the parsed truth
+   * @param statement Statement to be verified
+   * @param truthTree Parse tree of claim known to be true
+   * @return True if truth agrees with the statement, false if truth disagrees with or can't verify the statement
+   */
+  public boolean testStatements(String statement, Tree truthTree);
+
+  /**
    * Verify whether a parsed statement is true according to the parsed truth
    * @param statementTree Parse tree of statement to be verified
    * @param truthTree Parse tree of claim known to be true

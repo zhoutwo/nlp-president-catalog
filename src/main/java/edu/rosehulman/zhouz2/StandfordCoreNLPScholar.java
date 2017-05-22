@@ -69,6 +69,11 @@ public class StandfordCoreNLPScholar implements IScholar {
   }
 
   @Override
+  public boolean testStatements(String statement, Tree truthTree) {
+    return false;
+  }
+
+  @Override
   public boolean testStatements(Tree statementTree, Tree truthTree) {
     return false;
   }
