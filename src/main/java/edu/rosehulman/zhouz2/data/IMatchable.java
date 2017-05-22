@@ -10,4 +10,10 @@ public interface IMatchable {
    * @return True if this object matches m, false otherwise
    */
   public boolean match(IMatchable m);
+
+  /**
+   * Returns whether this IMatachable has unknown value. An unknown value always matches value of the same type.
+   * @return True if this IMatchable has an unknown value, false otherwise
+   */
+  public boolean isUnknownValue();
 }
