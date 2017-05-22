@@ -1,17 +1,13 @@
 package edu.rosehulman.zhouz2;
 
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeCoreAnnotations;
-import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.PropertiesUtils;
+import edu.stanford.nlp.coref.*;
+import edu.stanford.nlp.coref.data.*;
+import edu.stanford.nlp.ling.*;
+import edu.stanford.nlp.pipeline.*;
+import edu.stanford.nlp.trees.*;
+import edu.stanford.nlp.util.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Zhou Zhou on 5/20/17.
@@ -37,6 +33,19 @@ public class  StandfordCoreNLPScholar implements IScholar {
     Annotation document = new Annotation(source);
     pipeline.annotate(document);
     List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+    System.out.println("---");
+    System.out.println("coref chains");
+    for (CorefChain cc : document.get(CorefCoreAnnotations.CorefChainAnnotation.class).values()) {
+      System.out.println("\t" + cc);
+    }
+    for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
+      System.out.println("---");
+      System.out.println("mentions");
+      for (Mention m : sentence.get(CorefCoreAnnotations.CorefMentionsAnnotation.class)) {
+        System.out.println("\t" + m);
+      }
+    }
+
     for (CoreMap sentence : sentences) {
       Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
       trees.add(tree);
