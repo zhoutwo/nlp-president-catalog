@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Created by Zhou Zhou on 5/20/17.
  */
-public class  StandfordCoreNLPScholar implements IScholar {
+public class StandfordCoreNLPScholar implements IScholar {
   private Map<String, List<Tree>> parseTreeMap;
   private final StanfordCoreNLP pipeline;
 
@@ -55,6 +55,21 @@ public class  StandfordCoreNLPScholar implements IScholar {
 
   @Override
   public boolean testStatement(String statement) {
+    return false;
+  }
+
+  @Override
+  public boolean testStatementByName(String name, String statement) {
+    return false;
+  }
+
+  @Override
+  public boolean testStatements(String statement, String truth) {
+    return false;
+  }
+
+  @Override
+  public boolean testStatements(Tree statementTree, Tree truthTree) {
     return false;
   }
 

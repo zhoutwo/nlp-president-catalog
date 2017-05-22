@@ -23,6 +23,30 @@ public interface IScholar {
   public boolean testStatement(String statement);
 
   /**
+   * Verify a statement about a person whether it's known to be true or not
+   * @param name Name of the person in scope
+   * @param statement A sentence to be verified by the scholar
+   * @return True if the statement is true. False if unknown or false
+   */
+  public boolean testStatementByName(String name, String statement);
+
+  /**
+   * Verify whether a statement is true according to the truth
+   * @param statement Statement to be verified
+   * @param truth Claim known to be true
+   * @return True if truth agrees with the statement, false if truth disagrees with or can't verify the statement
+   */
+  public boolean testStatements(String statement, String truth);
+
+  /**
+   * Verify whether a parsed statement is true according to the parsed truth
+   * @param statementTree Parse tree of statement to be verified
+   * @param truthTree Parse tree of claim known to be true
+   * @return True if truth agrees with the statement, false if truth disagrees with or can't verify the statement
+   */
+  public boolean testStatements(Tree statementTree, Tree truthTree);
+
+  /**
    * Return all parse trees under the specified name
    * @param name Name of the person to which the parse trees belong
    * @return All parse trees registered under the person with the name
