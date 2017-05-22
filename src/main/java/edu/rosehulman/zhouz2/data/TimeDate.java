@@ -1,29 +1,29 @@
 package edu.rosehulman.zhouz2.data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * Created by Zhou Zhou on 5/22/17.
  */
-public class TimePoint implements ITime {
-  private LocalDateTime time;
+public class TimeDate implements ITime {
+  private LocalDate date;
 
-  public TimePoint() {
+  public TimeDate() {
     this(null);
   }
 
-  public TimePoint(LocalDateTime t) {
-    time = t;
+  public TimeDate(LocalDate d) {
+    date = d;
   }
 
   @Override
   public String getName() {
-    return time.toString();
+    return date.toString();
   }
 
   @Override
   public void setName(String name) {
-    time = LocalDateTime.parse(name);
+    date = LocalDate.parse(name);
   }
 
   @Override
@@ -34,7 +34,7 @@ public class TimePoint implements ITime {
 
   @Override
   public boolean matchByName(String name) {
-    return time.equals(LocalDateTime.parse(name));
+    return date.equals(LocalDate.parse(name));
   }
 
   @Override
@@ -50,11 +50,11 @@ public class TimePoint implements ITime {
       if (test2) {
         return SpecificityComparisonOutput.EQUALLY_SPECIFIC;
       } else {
-        throw new RuntimeException("This is not possible");
+        return SpecificityComparisonOutput.MORE_SPECIFIC;
       }
     } else {
       if (test2) {
-        throw new RuntimeException("This is not possible");
+        return SpecificityComparisonOutput.LESS_SPECIFIC;
       } else {
         return SpecificityComparisonOutput.NOT_RELATED;
       }
