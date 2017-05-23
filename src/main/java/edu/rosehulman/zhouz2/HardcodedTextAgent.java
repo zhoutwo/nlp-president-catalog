@@ -16,9 +16,7 @@ public class HardcodedTextAgent implements IAgent {
   public void run() {
     IScholar scholar = new StandfordCoreNLPScholar();
     System.out.println(scholar.testStatements(
-      "Zhou Zhou is a programmer. He is a junior CSSE major at Rose-Hulman Institute of Technology " +
-        "and he is going to become a senior in the coming school year. Jerry, on the other hand, is Zhou's classmate " +
-        "in CSSE413.", ""));
+      text, "Zhou Zhou is a programmer. He is a junior CSSE major at Rose-Hulman Institute of Technology, and he is going to become a senior in the coming school year. Jerry, on the other hand, is Zhou's classmate in CSSE413. Zhou watches anime in library. Zhou studys human and animal on weekends in a far away land called Djdfhsdufh."));
 //    IWikiHTMLReader htmlReader = new PhantomJSWikiHTMLReader();
 //    File adams = new File("data/html/Adams.html");
 //    htmlReader.setWikiHTMLFile(adams);

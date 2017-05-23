@@ -1,26 +1,33 @@
 package edu.rosehulman.zhouz2;
 
+import edu.stanford.nlp.trees.Tree;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 /**
  * Created by JerryQiu on 5/20/17.
  */
 public class InfoCard {
-    private String subject;
-    private String object;
-    private String verb;
+    public NP np;
+    public VP vp;
 
-    public InfoCard(String subject, String verb, String object){
-        this.subject = subject;
-        this.verb = verb;
-        this.object = object;
+
+
+    public InfoCard(Tree np, Tree vp){
+        this.np = new NP(np);
+        this.vp = new VP(vp);
     }
 
+    public InfoCard(Tree tree) {
+        System.out.println(tree.toString());
+    }
 
-
-    public String extract(String sub, String v){
-        if (sub.contains(subject) && v.contains(verb)) {
-            return verb;
+    public boolean compareTo(InfoCard other) {
+        if (this.np.compareTo(other.np)) {
+            return this.vp.compareTo(other.vp);
         } else {
-            return "-1";
+            return false;
         }
     }
 }
