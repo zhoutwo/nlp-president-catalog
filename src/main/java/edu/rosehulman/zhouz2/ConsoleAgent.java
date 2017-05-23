@@ -32,17 +32,18 @@ public class ConsoleAgent implements IAgent {
       }
       n = reader.next();
     }
+    reader.nextLine();
 
     System.out.println("Enter a statement, press q to stop: ");
-    n = reader.next();
+    n = reader.nextLine();
     while (!n.equals("q")) {
-      System.out.println("Enter a statement, press q to stop: ");
-      n = reader.next();
       if (scholar.testStatement(n)) {
         System.out.println("The statement is true");
       } else {
         System.out.println("I'm not sure about this one");
       }
+      System.out.println("Enter a statement, press q to stop: ");
+      n = reader.nextLine();
     }
   }
 }

@@ -14,7 +14,7 @@ public class NP {
   public NP(Tree tree) {
     //this.labels = new ArrayList<>();
     this.words = new ArrayList<>();
-    System.out.println("NP get:" + tree.toString());
+    //System.out.println("NP get:" + tree.toString());
     parseHelper(tree);
   }
 

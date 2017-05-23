@@ -42,7 +42,7 @@ public class StandfordCoreNLPScholar implements IScholar {
     List<CoreMap> truthSentences = document.get(CoreAnnotations.SentencesAnnotation.class);
     for (CoreMap truthSentence: truthSentences) {
       Tree truthTree = truthSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-      System.out.println("Truth:" + truthTree.toString());
+      //System.out.println("Truth:" + truthTree.toString());
       parseSentenceTree(truthTree);
     }
   }
@@ -85,12 +85,13 @@ public class StandfordCoreNLPScholar implements IScholar {
     Tree NP;
     Tree VP;
     Tree temp = null;
+    //System.out.println(statement);
     Annotation statementAnnotation = new Annotation(statement);
     pipeline.annotate(statementAnnotation);
     CoreMap statementSentences = statementAnnotation.get(CoreAnnotations.SentencesAnnotation.class).get(0);
 
     Tree statementTree = statementSentences.get(TreeCoreAnnotations.TreeAnnotation.class);
-    System.out.println("Statement:" + statementTree.toString());
+    //System.out.println("Statement:" + statementTree.toString());
     NP = statementTree;
     while(NP.label().toString().equals("S") || NP.label().toString().equals("ROOT")) {
       //System.out.println(NP.label());
@@ -106,8 +107,8 @@ public class StandfordCoreNLPScholar implements IScholar {
         VP = tree;
       }
     }
-    System.out.println("NP is: " + NP.toString());
-    System.out.println("VP is: " + VP.toString());
+    //System.out.println("NP is: " + NP.toString());
+    //System.out.println("VP is: " + VP.toString());
     InfoCard statementCard = new InfoCard(NP,VP);
     for (InfoCard card: maps) {
       if (card.compareTo(statementCard)) {
