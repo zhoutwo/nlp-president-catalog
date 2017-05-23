@@ -18,7 +18,36 @@ public class VP {
     verbs = new ArrayList<>();
     subjects = new ArrayList<>();
     timeLocs = new ArrayList<>();
+    //System.out.println("VP get:" + tree.toString());
     parseHelper(tree);
+  }
+
+  private void parseHelper(Tree tree) {
+    //System.out.println("first child: " + tree.firstChild().label().toString());
+    for (Tree wordEntry: tree.getChildrenAsList()) {
+      //System.out.println("In loop: " + wordEntry.toString());
+      if (wordEntry.isPreTerminal()) {
+        //System.out.println("Is pre Terminal");
+        switch (wordEntry.label().toString()) {
+          case "VBZ": case "VBG": case "VB":case "VBD":
+            //System.out.println("Find verb: " + wordEntry.label() + " " + wordEntry.lastChild());
+            verbs.add(wordEntry.lastChild().toString());
+            break;
+          case "NP":case "NN":case "NNS":
+            addSubjects(wordEntry);
+            break;
+          case "PP":
+            addTimes(wordEntry, timeLocs.size());
+            break;
+          default:
+            //Ignore do nothing
+            //System.out.println("The word is ignored:" + wordEntry.label().toString() + " " + wordEntry.value());
+            break;
+        }
+      } else if (wordEntry.depth() > 2){
+        parseHelper(wordEntry);
+      }
+    }
   }
 
   public ArrayList<String> getVerbs() {
@@ -31,29 +60,6 @@ public class VP {
 
   public ArrayList<String> getTimeLocs() {
     return timeLocs;
-  }
-
-  private void parseHelper(Tree tree) {
-    for (Tree wordEntry: tree.getChildrenAsList()) {
-      if (wordEntry.isLeaf()) {
-        switch (wordEntry.label().toString()) {
-          case "VBZ": case "VBG": case "VB":
-            verbs.add(wordEntry.value());
-            break;
-          case "NP":
-            addSubjects(tree);
-            break;
-          case "PP":
-            addTimes(tree, timeLocs.size());
-            break;
-          default:
-            //Ignore do nothing
-            break;
-        }
-      } else {
-        parseHelper(wordEntry);
-      }
-    }
   }
 
   private void addSubjects(Tree tree) {
@@ -83,12 +89,19 @@ public class VP {
   This parameter vp is by default only contains simple sentence so that its vp.index = 1
    */
   public boolean compareTo(VP vp) {
+    //System.out.println("verbs: " + verbs.toString());
+    //System.out.println("subjects: " + subjects.toString());
+    //System.out.println("timeLocs: " + timeLocs.toString());
     ArrayList<String> testVerbs = vp.getVerbs();
     ArrayList<String> testSubjects = vp.getSubjects();
-    ArrayList<String> testTimeLocs = vp.getTimeLocs();
+    //ArrayList<String> testTimeLocs = vp.getTimeLocs();
     boolean verbFlag = true;
     boolean subjectFlag = true;
-    boolean timeLocFlag = true;
+    if (testSubjects.isEmpty()) {
+      subjectFlag = false;
+    }
+    //boolean timeLocFlag = true;
+
     for (String test: testVerbs) {
       if (this.verbs.contains(test)) {
         verbFlag = false;
@@ -99,12 +112,12 @@ public class VP {
         subjectFlag = false;
       }
     }
-    for (String test: testTimeLocs) {
-      if (this.timeLocs.contains(test)) {
-        timeLocFlag = false;
-      }
-    }
-    if (verbFlag || subjectFlag || timeLocFlag) {
+//    for (String test: testTimeLocs) {
+//      if (this.timeLocs.contains(test)) {
+//        timeLocFlag = false;
+//      }
+//    }
+    if (verbFlag || subjectFlag) {
       return false;
     }
     return true;

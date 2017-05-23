@@ -13,6 +13,7 @@ public class Entry {
    */
   public static void main(String[] args) {
     Thread agentThread = new Thread(new ConsoleAgent());
+    //Thread agentThread = new Thread(new HardcodedTextAgent("Lincoln initially concentrated on the military."));
     agentThread.run();
   }
 }

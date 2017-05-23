@@ -32,18 +32,89 @@ public class StandfordCoreNLPScholar implements IScholar {
 
   @Override
   public void parseText(String name, String source) {
+    System.out.println("Start parsing " + name);
     List<Annotation> annotations = parseAnnotationMap.computeIfAbsent(name, k -> new ArrayList<Annotation>());
     Annotation document = new Annotation(source);
     pipeline.annotate(document);
     annotations.add(document);
     parseAnnotationMap.put(name, annotations);
+
+    List<CoreMap> truthSentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+    for (CoreMap truthSentence: truthSentences) {
+      Tree truthTree = truthSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+      System.out.println("Truth:" + truthTree.toString());
+      parseSentenceTree(truthTree);
+    }
+  }
+
+  private void parseSentenceTree(Tree truthTree) {
+    Tree NP;
+    Tree VP;
+    boolean flag = true;
+    if (truthTree.label().toString().equals("S") || truthTree.label().toString().equals("ROOT")) {
+      for (Tree tree:truthTree.children()){
+        if (tree.label().toString().equals("S")) {
+          parseSentenceTree(tree);
+          flag = false;
+        }
+      }
+      if (flag) {
+        NP = null;
+        VP = null;
+        for (Tree tree:truthTree.children()) {
+          //System.out.println("Child: "+tree.toString());
+          if (tree.label().toString().equals("NP")) {
+            NP = tree;
+          } else if (NP!= null && tree.label().toString().equals("VP")) {
+            VP = tree;
+          } else {
+            //System.out.println("Ignored" + tree.label().toString() + " " + tree.value());
+          }
+        }
+        if (NP!= null && VP != null){
+          maps.add(new InfoCard(NP,VP));
+          //System.out.println("NP is: " + NP.toString());
+          //System.out.println("VP is: " + VP.toString());
+        }
+      }
+    }
   }
 
   @Override
   public boolean testStatement(String statement) {
-    // TODO: Find the name in statement
-    String name = "Abraham Lincoln";
-    return testStatementByName(name, statement);
+    Tree NP;
+    Tree VP;
+    Tree temp = null;
+    Annotation statementAnnotation = new Annotation(statement);
+    pipeline.annotate(statementAnnotation);
+    CoreMap statementSentences = statementAnnotation.get(CoreAnnotations.SentencesAnnotation.class).get(0);
+
+    Tree statementTree = statementSentences.get(TreeCoreAnnotations.TreeAnnotation.class);
+    System.out.println("Statement:" + statementTree.toString());
+    NP = statementTree;
+    while(NP.label().toString().equals("S") || NP.label().toString().equals("ROOT")) {
+      //System.out.println(NP.label());
+      temp = NP;
+      NP = NP.firstChild();
+    }
+    NP = null;
+    VP = null;
+    for (Tree tree:temp.children()){
+      if (tree.label().toString().equals("NP")) {
+        NP = tree;
+      } else if (NP!= null && tree.label().toString().equals("VP")) {
+        VP = tree;
+      }
+    }
+    System.out.println("NP is: " + NP.toString());
+    System.out.println("VP is: " + VP.toString());
+    InfoCard statementCard = new InfoCard(NP,VP);
+    for (InfoCard card: maps) {
+      if (card.compareTo(statementCard)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override
@@ -64,6 +135,7 @@ public class StandfordCoreNLPScholar implements IScholar {
     return testStatements(statement, truthAnnotation);
   }
 
+  //This method is unused now
   @Override
   public boolean testStatements(String statement, Annotation truthAnnotation) {
     List<CoreMap> truthSentences = truthAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
@@ -85,7 +157,11 @@ public class StandfordCoreNLPScholar implements IScholar {
         NP = NP.firstChild();
       }
       //System.out.println("NP is: " + NP.toString());
-      VP = temp.children()[1];
+      if (temp.children().length > 1) {
+        VP = temp.children()[1];
+      } else {
+        VP = null;
+      }
       //System.out.println("VP is: " + VP.toString());
 
 //      for (CoreLabel label: truthLabel) {
@@ -98,7 +174,7 @@ public class StandfordCoreNLPScholar implements IScholar {
 //        }
 //        i++;
 //      }
-      maps.add(new InfoCard(NP, VP));
+      if (VP != null) maps.add(new InfoCard(NP, VP));
     }
     //The statementAnnotation is supposed to be a single sentence. Thus, the length of the list is 1;
     Annotation statementAnnotation = new Annotation(statement);

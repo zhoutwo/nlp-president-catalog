@@ -2,9 +2,6 @@ package edu.rosehulman.zhouz2;
 
 import edu.stanford.nlp.trees.Tree;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 /**
  * Created by JerryQiu on 5/20/17.
  */
