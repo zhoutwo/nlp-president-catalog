@@ -1,29 +1,22 @@
 package edu.rosehulman.zhouz2;
 
-//import edu.rosehulman.zhouz2.data.*;
 import edu.stanford.nlp.coref.*;
 import edu.stanford.nlp.coref.data.*;
-import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.pipeline.*;
+import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.*;
 import edu.stanford.nlp.ling.CoreAnnotations;
 
-import javax.sound.sampled.Line;
 import java.util.*;
 
 /**
  * Created by Zhou Zhou on 5/20/17.
  */
 public class StandfordCoreNLPScholar implements IScholar {
-  private Map<String, List<Tree>> parseTreeMap;
+  private Map<String, List<Annotation>> parseAnnotationMap;
   private final StanfordCoreNLP pipeline;
-  private ArrayList<InfoCard> maps;
-  //private final Pool<IEvent> events;
-  //private final Pool<ITime> times;
-  //private final Pool<IAction> actions;
-  //private final Pool<ILocation> locations;
-  //private final Pool<ConcreteEntity> entities;
+  private List<InfoCard> maps;
 
   public StandfordCoreNLPScholar() {
     pipeline = new StanfordCoreNLP(PropertiesUtils.asProperties(
@@ -33,43 +26,17 @@ public class StandfordCoreNLPScholar implements IScholar {
       "coref.algorithm", "neural"
     ));
 
-    parseTreeMap = new HashMap<>();
-    maps = new ArrayList<InfoCard>();
-//    events = new Pool<>();
-//    times = new Pool<>();
-//    actions = new Pool<>();
-//    locations = new Pool<>();
-//    entities = new Pool<>();
+    parseAnnotationMap = new HashMap<>();
+    maps = new ArrayList<>();
   }
-
-  //private static boolean testMatching(Pool<IEvent> statementEvents, Pool<IEvent> truthEvents) {
-  //  return false;
-  //}
 
   @Override
   public void parseText(String name, String source) {
-    List<Tree> trees = parseTreeMap.computeIfAbsent(name, k -> new ArrayList<Tree>());
+    List<Annotation> annotations = parseAnnotationMap.computeIfAbsent(name, k -> new ArrayList<Annotation>());
     Annotation document = new Annotation(source);
     pipeline.annotate(document);
-    List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-    System.out.println("---");
-    System.out.println("coref chains");
-    for (CorefChain cc : document.get(CorefCoreAnnotations.CorefChainAnnotation.class).values()) {
-      System.out.println("\t" + cc);
-    }
-    for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
-      System.out.println("---");
-      System.out.println("mentions");
-      for (Mention m : sentence.get(CorefCoreAnnotations.CorefMentionsAnnotation.class)) {
-        System.out.println("\t" + m);
-      }
-    }
-
-    for (CoreMap sentence : sentences) {
-      Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-      trees.add(tree);
-    }
-    parseTreeMap.put(name, trees);
+    annotations.add(document);
+    parseAnnotationMap.put(name, annotations);
   }
 
   @Override
@@ -81,9 +48,9 @@ public class StandfordCoreNLPScholar implements IScholar {
 
   @Override
   public boolean testStatementByName(String name, String statement) {
-    List<Tree> trees = parseTreeMap.get(name);
-    for (Tree tree : trees) {
-      if (testStatements(statement, tree)) {
+    List<Annotation> annotations = parseAnnotationMap.get(name);
+    for (Annotation document : annotations) {
+      if (testStatements(statement, document)) {
         return true;
       }
     }
@@ -94,7 +61,11 @@ public class StandfordCoreNLPScholar implements IScholar {
   public boolean testStatements(String statement, String truth) {
     Annotation truthAnnotation = new Annotation(truth);
     pipeline.annotate(truthAnnotation);
-    //Pool<IEvent> statementEvents = generateEvents(statementAnnotation);
+    return testStatements(statement, truthAnnotation);
+  }
+
+  @Override
+  public boolean testStatements(String statement, Annotation truthAnnotation) {
     List<CoreMap> truthSentences = truthAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
 
     Tree NP;
@@ -166,34 +137,15 @@ public class StandfordCoreNLPScholar implements IScholar {
   }
 
   @Override
-  public boolean testStatements(String statement, Tree truthTree) {
-    Annotation statementAnnotation = new Annotation(statement);
-    pipeline.annotate(statementAnnotation);
-    List<CoreMap> statementSentences = statementAnnotation.get(CoreAnnotations.SentencesAnnotation.class);
-    for (CoreMap statementSentence : statementSentences) {
-      Tree statementTree = statementSentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-      if (testStatements(statementTree, truthTree)) {
-        return true;
-      }
-    }
-    return false;
+  public List<Annotation> getAnnotationsByName(String name) {
+    return parseAnnotationMap.get(name);
   }
 
   @Override
-  public boolean testStatements(Tree statementTree, Tree truthTree) {
-    return false;
-  }
-
-  @Override
-  public List<Tree> getParseTreesByName(String name) {
-    return parseTreeMap.get(name);
-  }
-
-  @Override
-  public Map<String, List<Tree>> getParseTrees() {
-    Map<String, List<Tree>> result = new HashMap<>();
-    for (String key : parseTreeMap.keySet()) {
-      result.put(key, parseTreeMap.get(key));
+  public Map<String, List<Annotation>> getAnnotations() {
+    Map<String, List<Annotation>> result = new HashMap<>();
+    for (String key : parseAnnotationMap.keySet()) {
+      result.put(key, parseAnnotationMap.get(key));
     }
     return result;
   }

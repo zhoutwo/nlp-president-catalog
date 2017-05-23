@@ -1,5 +1,6 @@
 package edu.rosehulman.zhouz2;
 
+import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.trees.Tree;
 
 import java.util.*;
@@ -41,29 +42,21 @@ public interface IScholar {
   /**
    * Verify whether statement is true according to the parsed truth
    * @param statement Statement to be verified
-   * @param truthTree Parse tree of claim known to be true
+   * @param truthAnnotation Annotation of claim known to be true
    * @return True if truth agrees with the statement, false if truth disagrees with or can't verify the statement
    */
-  public boolean testStatements(String statement, Tree truthTree);
-
-  /**
-   * Verify whether a parsed statement is true according to the parsed truth
-   * @param statementTree Parse tree of statement to be verified
-   * @param truthTree Parse tree of claim known to be true
-   * @return True if truth agrees with the statement, false if truth disagrees with or can't verify the statement
-   */
-  public boolean testStatements(Tree statementTree, Tree truthTree);
+  public boolean testStatements(String statement, Annotation truthAnnotation);
 
   /**
    * Return all parse trees under the specified name
    * @param name Name of the person to which the parse trees belong
-   * @return All parse trees registered under the person with the name
+   * @return All annotated documents registered under the person with the name
    */
-  public List<Tree> getParseTreesByName(String name);
+  public List<Annotation> getAnnotationsByName(String name);
 
   /**
    * Return all parsgie trees sorted by name
-   * @return A map from name to all parse trees related to the person with that name
+   * @return A map from name to all annotated documents related to the person with that name
    */
-  public Map<String, List<Tree>> getParseTrees();
+  public Map<String, List<Annotation>> getAnnotations();
 }
